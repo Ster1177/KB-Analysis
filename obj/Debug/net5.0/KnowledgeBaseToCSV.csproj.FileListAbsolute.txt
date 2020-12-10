@@ -61,7 +61,6 @@ C:\Users\ps-silva\source\repos\KB-AN\bin\Debug\net5.0\Accessibility.dll
 C:\Users\ps-silva\source\repos\KB-AN\bin\Debug\net5.0\System.Runtime.Serialization.Formatters.Soap.dll
 C:\Users\ps-silva\source\repos\KB-AN\bin\Debug\net5.0\System.Deployment.dll
 C:\Users\ps-silva\source\repos\KB-AN\bin\Debug\net5.0\SuperSocket.ClientEngine.dll
-C:\Users\ps-silva\source\repos\KB-AN\obj\Debug\net5.0\KnowledgeBaseToCSV.csprojAssemblyReference.cache
 C:\Users\ps-silva\source\repos\KB-AN\obj\Debug\net5.0\KnowledgeBaseToCSV.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\ps-silva\source\repos\KB-AN\obj\Debug\net5.0\KnowledgeBaseToCSV.AssemblyInfoInputs.cache
 C:\Users\ps-silva\source\repos\KB-AN\obj\Debug\net5.0\KnowledgeBaseToCSV.AssemblyInfo.cs

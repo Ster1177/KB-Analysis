@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -154,7 +155,6 @@ public static class Utilities
         for (int i = 0; i < zeilen; i++)
         {
             DataRow row = table.Rows[i];
-            //Debug.WriteLine("{0} {1} ", row[0], row[1]);
             for (int j = 0; j < spalten; j++)
             {
                 string s = row[j].ToString();
@@ -177,6 +177,11 @@ public static class Utilities
         return colValues;
     }
 
+    public static string StripHTML(string input)
+    {
+        return Regex.Replace(input, "<.*?>", String.Empty);
+    }
+
     public static void ToCSV(DataTable dtDataTable, string strFilePath)
     {
         StreamWriter sw = new StreamWriter(strFilePath, false);
@@ -197,17 +202,9 @@ public static class Utilities
                 if (!Convert.IsDBNull(dr[i]))
                 {
                     string value = dr[i].ToString();
-                    value = value.Replace("\n", "").Replace("\r", "");
-
-                    if (value.Contains(','))
-                    {
-                        value = String.Format("\"{0}\"", value);
-                        sw.Write(value);
-                    }
-                    else
-                    {
-                        sw.Write(dr[i].ToString());
-                    }
+                    value = StripHTML(value);
+                    value = value.Replace("\n", "").Replace("\r", "").Replace(",", " ");
+                    sw.Write(value);
                 }
                 if (i < dtDataTable.Columns.Count - 1)
                 {

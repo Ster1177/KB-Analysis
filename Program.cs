@@ -22,31 +22,35 @@ namespace KnowledgeBaseToCSV
             if (result2 == DialogResult.OK)
             {
                 basePath = folderBrowserDialog.SelectedPath + '\\';
-            } else
+            }
+            else
             {
                 basePath = null;
                 throw new Exception("Folder not found");
             }
 
             GetThreadsByFilterInput getThreadsByfilterInput = new GetThreadsByFilterInput();
-            getThreadsByfilterInput.PageSize = 200;
+            getThreadsByfilterInput.PageSize = 100;
             getThreadsByfilterInput.PageNumber = 1;
             getThreadsByfilterInput.ThreadType = ThreadType.KnowledgeBase;
 
             NgpDataSet resultThreads = getThreadsByfilterInput.GetThreadsByFilterSync().Threads;
             DataSet dataSetThreads = Utilities.ToDataSet(resultThreads);
-             string pathThreads = basePath + "threads.csv";
+            string pathThreads = basePath + "threads.csv";
+
+            string[] threadColumns = {"id", "title", "type", "createdOn", "tags", "owner" };
 
             foreach (DataTable table in dataSetThreads.Tables)
             {
-                Utilities.ToCSV(table, pathThreads);
+                Utilities.ToCSV(table.DefaultView.ToTable(false, threadColumns), pathThreads);
             }
+
+            string[] articleColumns = { "Body", "CreatedOn", "CreatedBy", "From", "IsMVArticle", "numberOfVotes"};
 
             if (dataSetThreads.Tables.Count > 0)
             {
                 string pathArticles;
                 List<object> threadIds = Utilities.GetColumnValues(dataSetThreads.Tables[0], "id");
-
                 foreach (long threadId in threadIds)
                 {
                     GetAllArticlesByPageInput getAllArticlesByPageInput = new GetAllArticlesByPageInput();
@@ -59,19 +63,11 @@ namespace KnowledgeBaseToCSV
                     if (dataSetArticles.Tables.Count > 0)
                     {
                         DataTable dataTableMainArt = dataSetArticles.Tables[0];
+
                         List<object> threadIdParent = Utilities.GetColumnValues(dataTableMainArt, "ArticleId");
                         pathArticles = basePath + "Article_" + threadId + '_' + threadIdParent[0] + ".csv";
 
-                        Utilities.ToCSV(dataTableMainArt, pathArticles);
-
-                        //int articleIt = 1;
-                        //foreach (DataTable table in dataSetArticles.Tables)
-                        //{
-                        //    pathArticles = basePath + "Article_" + threadId + '_' + articleIt + ".csv";
-                        //    Utilities.DebugTable(table);
-                        //    Utilities.ToCSV(table, pathArticles);
-                        //    articleIt++;
-                        //}
+                        Utilities.ToCSV(dataTableMainArt.DefaultView.ToTable(false, articleColumns), pathArticles);
                     }
                 }
             }
