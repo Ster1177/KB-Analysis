@@ -16,7 +16,6 @@ namespace KnowledgeBaseToCSV
         {
             string basePath;
             var folderBrowserDialog = new FolderBrowserDialog();
-
             // Show the FolderBrowserDialog.
             DialogResult result2 = folderBrowserDialog.ShowDialog();
             if (result2 == DialogResult.OK)
@@ -30,7 +29,12 @@ namespace KnowledgeBaseToCSV
             }
 
             GetThreadsByFilterInput getThreadsByfilterInput = new GetThreadsByFilterInput();
-            getThreadsByfilterInput.PageSize = 100;
+           
+            Form1 form = new Form1();
+            form.Activate();
+            form.ShowDialog();
+
+            getThreadsByfilterInput.PageSize = form.pageSize;
             getThreadsByfilterInput.PageNumber = 1;
             getThreadsByfilterInput.ThreadType = ThreadType.KnowledgeBase;
 
@@ -38,14 +42,14 @@ namespace KnowledgeBaseToCSV
             DataSet dataSetThreads = Utilities.ToDataSet(resultThreads);
             string pathThreads = basePath + "threads.csv";
 
-            string[] threadColumns = {"id", "title", "type", "createdOn", "tags", "owner" };
+            string[] threadColumns = { "id", "title", "type", "createdOn", "tags", "owner" };
 
             foreach (DataTable table in dataSetThreads.Tables)
             {
                 Utilities.ToCSV(table.DefaultView.ToTable(false, threadColumns), pathThreads);
             }
 
-            string[] articleColumns = { "Body", "CreatedOn", "CreatedBy", "From", "IsMVArticle", "numberOfVotes"};
+            string[] articleColumns = { "Body", "CreatedOn", "CreatedBy", "From", "IsMVArticle", "numberOfVotes" };
 
             if (dataSetThreads.Tables.Count > 0)
             {
