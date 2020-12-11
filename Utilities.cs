@@ -184,9 +184,9 @@ namespace KnowledgeBaseToCSV
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
 
-        public static void ToCSV(DataTable dtDataTable, string strFilePath)
+        public static void ToCSVHeaders(DataTable dtDataTable, StreamWriter sw)
         {
-            StreamWriter sw = new StreamWriter(strFilePath, false);
+            //StreamWriter sw = new StreamWriter(strFilePath, false);
             //headers    
             for (int i = 0; i < dtDataTable.Columns.Count; i++)
             {
@@ -196,8 +196,13 @@ namespace KnowledgeBaseToCSV
                     sw.Write(",");
                 }
             }
-            sw.Write(sw.NewLine);
-            foreach (DataRow dr in dtDataTable.Rows)
+            sw.Write(sw.NewLine);      
+            //sw.Close();
+        }
+
+         public static void ToCSVRows(DataTable dtDataTable, StreamWriter sw)
+        {
+             foreach (DataRow dr in dtDataTable.Rows)
             {
                 for (int i = 0; i < dtDataTable.Columns.Count; i++)
                 {
@@ -215,7 +220,6 @@ namespace KnowledgeBaseToCSV
                 }
                 sw.Write(sw.NewLine);
             }
-            sw.Close();
         }
     }
 }

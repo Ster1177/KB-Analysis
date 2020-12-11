@@ -5,6 +5,7 @@ using Cmf.Foundation.BusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
 
 namespace KnowledgeBaseToCSV
@@ -43,18 +44,24 @@ namespace KnowledgeBaseToCSV
             string pathThreads = basePath + "threads.csv";
 
             string[] threadColumns = { "id", "title", "type", "createdOn", "tags", "owner" };
-
+           
+            StreamWriter swTh = new StreamWriter(pathThreads, false);
             foreach (DataTable table in dataSetThreads.Tables)
             {
-                Utilities.ToCSV(table.DefaultView.ToTable(false, threadColumns), pathThreads);
+                Utilities.ToCSVHeaders(table.DefaultView.ToTable(false, threadColumns), swTh);
+                Utilities.ToCSVRows(table.DefaultView.ToTable(false, threadColumns), swTh);
             }
+            swTh.Close();
 
             string[] articleColumns = { "Body", "CreatedOn", "CreatedBy", "From", "IsMVArticle", "numberOfVotes" };
 
             if (dataSetThreads.Tables.Count > 0)
             {
-                string pathArticles;
+                string pathArticles =  basePath + "Articles.csv";
                 List<object> threadIds = Utilities.GetColumnValues(dataSetThreads.Tables[0], "id");
+
+                int itr = 0;
+                StreamWriter swArt = new StreamWriter(pathArticles, false);
                 foreach (long threadId in threadIds)
                 {
                     GetAllArticlesByPageInput getAllArticlesByPageInput = new GetAllArticlesByPageInput();
@@ -67,13 +74,17 @@ namespace KnowledgeBaseToCSV
                     if (dataSetArticles.Tables.Count > 0)
                     {
                         DataTable dataTableMainArt = dataSetArticles.Tables[0];
-
                         List<object> threadIdParent = Utilities.GetColumnValues(dataTableMainArt, "ArticleId");
-                        pathArticles = basePath + "Article_" + threadId + '_' + threadIdParent[0] + ".csv";
 
-                        Utilities.ToCSV(dataTableMainArt.DefaultView.ToTable(false, articleColumns), pathArticles);
+                        if(itr == 0)
+                        {
+                            Utilities.ToCSVHeaders(dataTableMainArt.DefaultView.ToTable(false, articleColumns), swArt);
+                        }
+                        Utilities.ToCSVRows(dataTableMainArt.DefaultView.ToTable(false, articleColumns), swArt);
+                        itr++;
                     }
                 }
+                swArt.Close();
             }
             MessageBox.Show("Conversion to CSV finished", "Prompt", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
