@@ -30,7 +30,7 @@ namespace KnowledgeBaseToCSV
             }
 
             GetThreadsByFilterInput getThreadsByfilterInput = new GetThreadsByFilterInput();
-           
+
             Form1 form = new Form1();
             form.Activate();
             form.ShowDialog();
@@ -44,7 +44,7 @@ namespace KnowledgeBaseToCSV
             string pathThreads = basePath + "threads.csv";
 
             string[] threadColumns = { "id", "title", "type", "createdOn", "tags", "owner" };
-           
+
             StreamWriter swTh = new StreamWriter(pathThreads, false);
             foreach (DataTable table in dataSetThreads.Tables)
             {
@@ -57,7 +57,7 @@ namespace KnowledgeBaseToCSV
 
             if (dataSetThreads.Tables.Count > 0)
             {
-                string pathArticles =  basePath + "Articles.csv";
+                string pathArticles = basePath + "Articles.csv";
                 List<object> threadIds = Utilities.GetColumnValues(dataSetThreads.Tables[0], "id");
 
                 int itr = 0;
@@ -75,12 +75,14 @@ namespace KnowledgeBaseToCSV
                     {
                         DataTable dataTableMainArt = dataSetArticles.Tables[0];
                         List<object> threadIdParent = Utilities.GetColumnValues(dataTableMainArt, "ArticleId");
+                        dataTableMainArt = dataTableMainArt.DefaultView.ToTable(false, articleColumns);
+                        Utilities.AddColToDataTable(dataTableMainArt, threadId);
 
-                        if(itr == 0)
+                        if (itr == 0)
                         {
-                            Utilities.ToCSVHeaders(dataTableMainArt.DefaultView.ToTable(false, articleColumns), swArt);
+                            Utilities.ToCSVHeaders(dataTableMainArt, swArt);
                         }
-                        Utilities.ToCSVRows(dataTableMainArt.DefaultView.ToTable(false, articleColumns), swArt);
+                        Utilities.ToCSVRows(dataTableMainArt, swArt);
                         itr++;
                     }
                 }

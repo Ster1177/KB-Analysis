@@ -196,13 +196,13 @@ namespace KnowledgeBaseToCSV
                     sw.Write(",");
                 }
             }
-            sw.Write(sw.NewLine);      
+            sw.Write(sw.NewLine);
             //sw.Close();
         }
 
-         public static void ToCSVRows(DataTable dtDataTable, StreamWriter sw)
+        public static void ToCSVRows(DataTable dtDataTable, StreamWriter sw)
         {
-             foreach (DataRow dr in dtDataTable.Rows)
+            foreach (DataRow dr in dtDataTable.Rows)
             {
                 for (int i = 0; i < dtDataTable.Columns.Count; i++)
                 {
@@ -219,6 +219,16 @@ namespace KnowledgeBaseToCSV
                     }
                 }
                 sw.Write(sw.NewLine);
+            }
+        }
+        public static void AddColToDataTable(DataTable dt, long threadId)
+        {
+            dt.Columns.Add("ThreadId", typeof(Int64));
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                //need to set value to MyRow column 
+                dr["ThreadId"] = threadId;   // or set it to some other value 
             }
         }
     }
