@@ -211,7 +211,14 @@ namespace KnowledgeBaseToCSV
                         string value = dr[i].ToString();
                         value = StripHTML(value);
                         value = value.Replace("\n", "").Replace("\r", "").Replace(",", " ");
-                        sw.Write(value);
+                        if (isNumeric(value))
+                        {
+                            sw.Write("'" + value);
+                        }
+                        else
+                        {
+                            sw.Write(value);
+                        }
                     }
                     if (i < dtDataTable.Columns.Count - 1)
                     {
@@ -221,6 +228,12 @@ namespace KnowledgeBaseToCSV
                 sw.Write(sw.NewLine);
             }
         }
+
+        private static bool isNumeric(string value)
+        {
+            return value.All(char.IsNumber);
+        }
+
         public static void AddColToDataTable(DataTable dt, long threadId)
         {
             dt.Columns.Add("ThreadId", typeof(Int64));
